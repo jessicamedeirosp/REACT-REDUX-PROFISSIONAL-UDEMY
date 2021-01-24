@@ -64,13 +64,34 @@
         const Header = () => 
             <div class="header">Calculadora</div>
         
-
-        const Calculator = () => (
+        const Calculator = () => {
+            /* state, passamos o state inicial e o React.useState devolve um array;
+            primeiro item do array é o estado, segundo item sempre é a função que vai alterar o estado;
+            const array = React.useState(0);
+            const display = array[0];
+            const setDisplay = array[1];
+            */
+            const [display, setDisplay] = React.useState(0);
+            return (
             <div class="calculator">
-                <div class="display"></div>
+                <div class="display">
+                    {display}
+                </div>
                 <div class="keyboard">
-                    <button>7</button>
-                    <button>8</button>
+                    <button 
+                        onClick={() => {
+                            setDisplay(display + 7);
+                        }}
+                    >
+                        7
+                    </button>
+                    <button
+                        onClick={() => {
+                            setDisplay(display + 8);
+                        }}
+                    >
+                        8
+                    </button>
                     <button>9</button>
                     <button>4</button>
                     <button>5</button>
@@ -81,15 +102,15 @@
                     <button>0</button>
                 </div>
             </div>
-        );
-
+            );
+        }
         const App = () => (
             <div>
                 <Header />
                 <Calculator />
             </div>
         );
-        
+
         ReactDOM.render(
             <App />,
             document.getElementById("root")
