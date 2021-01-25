@@ -62,12 +62,12 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script type="text/babel">
         const Header = () => 
-            <div class="header">Calculadora</div>
+            <div className="header">Calculadora</div>
         
         const Button = (props) => (
             <button 
                 onClick={() => {
-                   props.onNumberClick(props.value)
+                   props.onClick(props.value)
                 }}
             >
                 {props.value}
@@ -90,15 +90,16 @@
             }
 
             return (
-            <div class="calculator">
-                <div class="display">
+            <div className="calculator">
+                <div className="display">
                     {display}
                 </div>
-                <div class="keyboard">
-                    {keyboard.map(key => (
+                <div className="keyboard">
+                    {keyboard.map(value => (
                         <Button 
-                            value={key}
-                            onNumberClick={handleNumberClick}
+                            key={value}
+                            value={value}
+                            onClick={handleNumberClick}
                         />
                     ))}                    
                 </div>
