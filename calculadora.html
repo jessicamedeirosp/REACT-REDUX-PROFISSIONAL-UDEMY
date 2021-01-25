@@ -72,6 +72,12 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script type="text/babel">
         const calculatorRegex = /^([0-9]|-|\+|\*|\/|\.)*$/;
+        const keyboard = [
+            7,8,9,"/","C",
+            4,5,6,"*","Del",
+            1,2,3,"-","",
+            0,".","+","="
+        ];
 
         const Header = () => 
             <div className="header">Calculadora</div>
@@ -95,14 +101,12 @@
             const setDisplay = array[1];
             */
             const [display, setDisplay] = React.useState("");
-            const [error, setError] = React.useState();
+            const [error, setError] = React.useState();           
 
-            const keyboard = [
-                7,8,9,"/","C",
-                4,5,6,"*","Del",
-                1,2,3,"-","",
-                0,".","+","="
-            ];
+            React.useEffect(() => {
+                if (error)
+                    setError();
+            }, [display]);
 
             const doTheMath = () => {
                 try {
@@ -112,7 +116,7 @@
                 }                
             }
 
-            const handleClick = (value) => {
+            const handleClick = (value) => {                
                 switch (value) {
                     case "=":
                         doTheMath();
@@ -126,8 +130,7 @@
                         );
                         break;
                     default:
-                        setDisplay(`${display}${value}`);   
-
+                        setDisplay(`${display}${value}`); 
                 }                
                 
             }
@@ -138,7 +141,7 @@
                     type="text"
                     className="display"
                     value={display}
-                    onChange={event => {
+                    onChange={event => {                        
                         const { value } = event.target;
                         if (calculatorRegex.test(value)) 
                             setDisplay(event.target.value);
