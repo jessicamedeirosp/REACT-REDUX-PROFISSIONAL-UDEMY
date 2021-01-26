@@ -114,21 +114,27 @@
             */
             const [display, setDisplay] = React.useState("");
             const [error, setError] = React.useState();
-            const [showAdvanced, toggleAdvanced] = React.useState(true);
+            const [showAdvanced, toggleAdvanced] = React.useState(false);
             const [history, setHistory] = React.useState([]);
-            const [showHistory, toggleHistory] = React.useState(true);
+            const [showHistory, toggleHistory] = React.useState(false);
+            const historyReference = React.useRef();
 
             React.useEffect(() => {
                 if (error)
                     setError();
             }, [display]);
 
+            React.useEffect(() => {
+                if (history.length > 2 && showHistory)
+                    historyReference.current.scrollTop = historyReference.current.scrollHeight;
+                   
+            }, [history.length, showHistory]);
+
             const doTheMath = () => {
                 //setDisplay(previousState => previousState);
                 try {
                     const resultCalculation  =  eval(display);
                     const newHistory = [].concat(history, {
-                        key: Math.floor(Math.random() * (100 - 0)),
                         calculation: display,
                         resultCalculation
                     });
@@ -193,9 +199,9 @@
             return (
             <div className="calculator">
                 {showHistory && (
-                    <div className="history">
-                        {history.map(({key, calculation, resultCalculation}) => 
-                            <p key={key}>{`${calculation} = ${resultCalculation}`}</p>)}
+                    <div ref={historyReference} className="history">
+                        {history.map(({calculation, resultCalculation}, index) => 
+                            <p key={index}>{`${calculation} = ${resultCalculation}`}</p>)}
                     </div>
                 )}
                 <input
