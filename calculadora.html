@@ -61,6 +61,15 @@
         .error {
             color: red;
         }
+        .history {
+            padding: 0 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            height: 100px;
+            overflow-y: scroll;
+            margin-bottom: 8px;
+            text-align: right;
+        }
     </style>
     <title>Calculadora - React Profissional</title>
 </head>
@@ -79,7 +88,7 @@
             0,".","+","="
         ];
         const advancedKeys = [
-            "(",")"
+            "(",")", "Hist","Up","AC"
         ]
 
         const Header = () => 
@@ -105,7 +114,9 @@
             */
             const [display, setDisplay] = React.useState("");
             const [error, setError] = React.useState();
-            const [showAd, toggleAd] = React.useState(false);      
+            const [showAdvanced, toggleAdvanced] = React.useState(true);
+            const [history, setHistory] = React.useState([]);
+            const [showHistory, toggleHistory] = React.useState(true);
 
             React.useEffect(() => {
                 if (error)
@@ -113,8 +124,16 @@
             }, [display]);
 
             const doTheMath = () => {
+                //setDisplay(previousState => previousState);
                 try {
-                    setDisplay("" + eval(display));
+                    const resultCalculation  =  eval(display);
+                    const newHistory = [].concat(history, {
+                        key: Math.floor(Math.random() * (100 - 0)),
+                        calculation: display,
+                        resultCalculation
+                    });
+                    setHistory(newHistory);
+                    setDisplay("" + resultCalculation);
                 } catch (exception) {
                     setError(`Invalid expression: ${exception.message}`);
                 }                
@@ -134,7 +153,24 @@
                         );
                         break;
                     case "Ad":
-                        toggleAd(!showAd);
+                        toggleAdvanced(!showAdvanced);
+                        toggleHistory(false);
+                        break;
+                    case "Hist":
+                        toggleHistory(!showHistory);
+                        break;
+                    case "AC":
+                        setDisplay("");
+                        setHistory([]);
+                        break;
+                    case "Up":
+                        const lastIndex = history.length - 1;
+                        if (lastIndex < 0)
+                            break;
+                        const newDisplay = history[lastIndex].calculation;
+                        const newHistory = history.slice(0, lastIndex);
+                        setDisplay(newDisplay);
+                        setHistory(newHistory);
                         break;
                     default:
                         setDisplay(`${display}${value}`); 
@@ -156,6 +192,12 @@
             }
             return (
             <div className="calculator">
+                {showHistory && (
+                    <div className="history">
+                        {history.map(({key, calculation, resultCalculation}) => 
+                            <p key={key}>{`${calculation} = ${resultCalculation}`}</p>)}
+                    </div>
+                )}
                 <input
                     type="text"
                     className="display"
@@ -175,11 +217,11 @@
                 { error && 
                     <p className="error">{error}</p>
                 }
-                { showAd && 
+                { showAdvanced && (
                     <div className="keyboard">
                         {advancedKeys.map(buildButtonKey)}   
-                    </div>
-                }                
+                    </div>                    
+                )}                
                 <div className="keyboard">
                     {keyboard.map(buildButtonKey)}      
                 </div>
